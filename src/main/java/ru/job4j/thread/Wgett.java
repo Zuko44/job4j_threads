@@ -10,22 +10,26 @@ import static java.lang.Thread.sleep;
 public class Wgett implements Runnable {
     private final String url;
     private final int speed;
+    private final String fileName;
 
-    public Wgett(String url, int speed) {
+    public Wgett(String url, int speed, String fileName) {
         this.url = url;
         this.speed = speed;
+        this.fileName = fileName;
     }
 
     private static void check(String[] args) {
-        if (args.length < 2) {
-            throw new IllegalArgumentException("there should be 2 parameters");
+        if (args.length < 3) {
+            throw new IllegalArgumentException("there should be 3 parameters");
         }
     }
 
     public static void main(String[] args) throws InterruptedException {
+        check(args);
         String url = args[0];
         int speed = Integer.parseInt(args[1]);
-        Thread wget = new Thread(new Wgett(url, speed));
+        String fileName = args[2];
+        Thread wget = new Thread(new Wgett(url, speed, fileName));
         wget.start();
         wget.join();
     }
@@ -33,7 +37,7 @@ public class Wgett implements Runnable {
     @Override
     public void run() {
         try (InputStream in = new URL(url).openStream();
-             FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\user\\Downloads\\pom.xml")) {
+             FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\user\\Downloads\\" + fileName)) {
             byte[] dataBuffer = new byte[1024];
             int bytesRead;
             long start = System.currentTimeMillis();
