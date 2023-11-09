@@ -3,6 +3,7 @@ package ru.job4j.cache;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CacheTest {
     @Test
@@ -34,5 +35,17 @@ class CacheTest {
         cache.add(model);
         cache.delete(model);
         assertThat(cache.add(model)).isTrue();
+    }
+
+    @Test
+    void whenUpdateModelThanException() {
+        Cache cache = new Cache();
+        String word = "wrong version";
+        Base model = new Base(1, 0);
+        cache.add(model);
+        assertThatThrownBy(() -> cache.update(new Base(1, 1)))
+                .isInstanceOf(OptimisticException.class)
+                .hasMessageContaining(word)
+                .hasMessageContaining("wrong version");
     }
 }
